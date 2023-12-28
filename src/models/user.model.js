@@ -1,6 +1,6 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";    //mongoose is alibrary and Schema is class
 import jwt from "jsonwebtoken";
-import bcrypt, { hash } from "bcrypt";
+import bcrypt, { hash } from "bcrypt";          // bcrypt is a library and hash is a function
 
 const userSchema = new Schema(
     {
@@ -48,11 +48,11 @@ const userSchema = new Schema(
 
     }, 
     {
-        timestamps : true
+        timestamps : true           // it is used to for created at & updated at field
     }
 )
 
-userSchema.pre("save", async function (next){           // this method is only call when there is change in password field 
+userSchema.pre("save", async function (next){           // this method will only be called when there is change in password field 
     if(!this.isModified("password")){
         return next()
     }
@@ -60,13 +60,30 @@ userSchema.pre("save", async function (next){           // this method is only c
     next()
 } )
 
+// Another method, here the error and hashed password is being printed
+// userSchema.pre("save", async function (next){           
+//     if(!this.isModified("password")){
+//         return next()
+//     }
+//     this.password = bcrypt.hash(this.password, 10, (err, hashedPassword)=>{
+//         if (err) {
+//             console.log("Error in hashing the password", err);
+//         } 
+//         else {
+//             console.log("Hashed Password", hashedPassword);
+//         }
+//     })
+//     next()
+// } )
+
+
 userSchema.methods.isPasswordCorrect = async function(password){
     return await bcrypt.compare(password, this.password)      // first is normal password, second is the encrypted password
 }
 
-userSchema.methods.generateAccessToken = function(){
-    return jwt.sign(                                                // this will generate the token
-        {
+userSchema.methods.generateAccessToken = function(){         // this will generate the token
+    return jwt.sign(                                                
+        {                                                   // jwt.sign(payload, secretOrPvtKey, [options, callback])
             _id : this._id,
             email : this.email,
             userName : this.userName,
@@ -80,7 +97,7 @@ userSchema.methods.generateAccessToken = function(){
 }
 
 userSchema.methods.generateRefreshToken = function(){
-    return jwt.sign(                                                // this will generate the token
+    return jwt.sign(                                                
         {
             _id : this._id
         },
