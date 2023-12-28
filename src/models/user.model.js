@@ -60,7 +60,7 @@ userSchema.pre("save", async function (next){           // this method will only
     next()
 } )
 
-// Another method, here the error and hashed password is being printed
+// Another method, using callback to get the error and hashedPassword
 // userSchema.pre("save", async function (next){           
 //     if(!this.isModified("password")){
 //         return next()
